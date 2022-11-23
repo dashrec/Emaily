@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 
 app.get('/', (req, res) => {  // route handler. req representing the incoming request. 
-  res.send({ hi: 'there' }); // res.send Immediately send some JSON back to who made this request
+  res.send({ hi: 'there changed' }); // res.send Immediately send some JSON back to who made this request
 });
 
 const PORT = process.env.PORT || 5000;  // It says look at the underlying environment and see if they have declared a port for us to use.
