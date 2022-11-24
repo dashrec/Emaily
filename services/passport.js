@@ -22,6 +22,7 @@ new GoogleStrategy(
     clientID: keys.googleClientID,
     clientSecret: keys.googleClientSecret,
     callbackURL: '/auth/google/callback', // redirect from google after user grants permissions to this url back to our app
+    proxy: true, // So we just say, hey, Google strategy, if our request runs through any proxy, that's totally fine. Just deal with it.
   },
   (accessToken, refreshToken, profile, done) => {
     User.findOne({ googleId: profile.id }).then(existingUser => { //If one exists, we're going to call that the existing user. So this will be a model instance in model instance that represents a user who was found now if no user.
