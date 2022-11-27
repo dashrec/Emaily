@@ -16,27 +16,25 @@ passport.deserializeUser((id, done) => { // users id
   });
 });
 
-passport.use(  //hey passport I want you to be aware that there is a new strategy available and here it is, make use of it.
-new GoogleStrategy(
-  {
-    clientID: keys.googleClientID,
-    clientSecret: keys.googleClientSecret,
-    callbackURL: '/auth/google/callback', // redirect from google after user grants permissions to this url back to our app
-    proxy: true, // So we just say, hey, Google strategy, if our request runs through any proxy, that's totally fine. Just deal with it.
-  },
-  (accessToken, refreshToken, profile, done) => {
-    User.findOne({ googleId: profile.id }).then(existingUser => { //If one exists, we're going to call that the existing user. So this will be a model instance in model instance that represents a user who was found now if no user.
-      if (existingUser) {        // we already have a record with the given profile ID
-        done(null, existingUser); //tell passport all is fine here is user
-      } else {
-        // we don't have a user record with this ID, make a new record!
-        new User({ googleId: profile.id }).save()
-          .then(user => done(null, user)); // get that user from db
-      }
-    });
-  }
-)
+passport.use(
+  //hey passport I want you to be aware that there is a new strategy available and here it is, make use of it.
+  new GoogleStrategy(
+    {
+      clientID: keys.googleClientID,
+      clientSecret: keys.googleClientSecret,
+      callbackURL: '/auth/google/callback', // redirect from google after user grants permissions to this url back to our app
+      proxy: true, // So we just say, hey, Google strategy, if our request runs through any proxy, that's totally fine. Just deal with it.
+    },
+    async (accessToken, refreshToken, profile, done) => {
+      const existingUser = await User.findOne({ googleId: profile.id });
 
+      if (existingUser) {
+        return done(null, existingUser);
+      }
+      const user = await new User({ googleId: profile.id }).save();
+      done(null, user);
+    }
+  )
 );
 // by calling the done callback or the done function. This tells Passport that we have now finished making this user.
 
