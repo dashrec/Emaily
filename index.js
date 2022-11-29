@@ -3,9 +3,11 @@ const mongoose = require('mongoose');
 const cookieSession = require('cookie-session');
 const passport = require('passport');
 require('./models/User');
+require('./models/Survey');
 require('./services/passport');
 const keys = require('./config/keys');
 const bodyParser = require('body-parser');
+
 
 
 mongoose.connect(keys.mongoURI);
@@ -28,6 +30,7 @@ app.use(passport.session()); // tell passport make use cookies to handle authent
 require('./routes/authRoutes')(app); //app immediately  calls  a function we required
 require('./routes/billingRoutes')(app);
 // So remember both of these files, the auth routes and billing route files, they return a function, they export a function.
+require('./routes/surveyRoutes')(app);
 
 
 if (process.env.NODE_ENV === 'production') { // in prod mode we do not have create app server which handles routes for client side
